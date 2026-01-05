@@ -1,3 +1,6 @@
+## FIXME: This doesn't need bash and should be written such that the user doesn't need to explicitly construct a valid environment
+## FIXME: Most commands are using values that should be handled by variables and templates/parameters
+
 # GETTING STARTED
 function isSuccess() {
     ret=$?

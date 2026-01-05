@@ -71,6 +71,7 @@ class OobiDoer(doing.DoDoer):
         super(OobiDoer, self).__init__(doers=doers)
 
     def waitDo(self, tymth, tock=0.0, **kwa):
+        ## XXX: This doc comment states it returns a Callable, but no such statement exists
         """ Waits for oobis to load
 
         Parameters:
@@ -81,10 +82,15 @@ class OobiDoer(doing.DoDoer):
         Returns:  doifiable Doist compatible generator method for loading oobis using
         the Oobiery
         """
+        ## XXX: This sounds like a good candidate for eventual rewriting using the context manager protocol ('with' blocks)
         # enter context
         self.wind(tymth)
         self.tock = tock
         _ = (yield self.tock)
+
+        ## XXX: Loop counter and max timeout values
+        count: int = 0
+        loop_max: int = 60 # With a .25s wait, this is 15s, not counting any applicable timeouts further in the call chain
 
         if self.force:  # if --force specified, remove previous record of OOBI resolution
             self.hby.db.roobi.rem(keys=(self.oobi,))
@@ -92,9 +98,16 @@ class OobiDoer(doing.DoDoer):
         self.extend(self.obi.doers)
         self.extend(self.authn.doers)
 
+        ## XXX: Is there an error/timeout cutoff?
         while not self.obi.hby.db.roobi.get(keys=(self.oobi,)):
-            yield 0.25
+            if count < loop_max:
+                logger.info(f"Entered 'oobiDoer.waitDo()' loop, iteration #{count}/{loop_max}")
+                yield 0.25
+                count += 1
+            else:
+                raise Exception(f"OOBI Resolution Timed out after {loop_max} tries")
 
+        ## XXX: This mechod chain makes no sense without additional context, looks like a call to the habitat to do a database lookup for the given key
         obr = self.obi.hby.db.roobi.get(keys=(self.oobi,))
         if self.force:
             while obr.cid not in self.hby.kevers:

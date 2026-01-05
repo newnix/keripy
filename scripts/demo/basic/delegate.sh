@@ -11,6 +11,10 @@ kli init --name "$delegator" --nopasscode
 kli init --name "$delegate" --nopasscode
 kli init --name "$validator" --nopasscode
 
+## XXX: How does this work? Was a previous instance launched and given these OOBIs? They're clearly pre-generated, but how was the port mapping and
+## URL data configured prior to these commands being run? Manually running these commands shows nothing listening on these ports, so even with pre-computed OOBI
+## files, it's unclear how the requests get handled.
+## NOTE: From testing, running these commands manually, they'll enter an infinite loop if the HTTP endpoint isn't available (~8min without erroring out)
 kli oobi resolve --name "$delegator" --oobi http://127.0.0.1:5643/oobi/BLskRTInXnMxWaGqcpSyMgo0nYbalW99cGZESrz3zapM/controller
 kli oobi resolve --name "$delegate" --oobi http://127.0.0.1:5642/oobi/BBilc4-L3tFUnfM_wJr4S4OJanAv_VmF_dJNN6vkf2Ha/controller
 kli oobi resolve --name "$validator" --oobi http://127.0.0.1:5644/oobi/BIKKuvBwpmDVA4Ds-EpL5bt9OqPzWPja2LigFYZN2YfX/controller
